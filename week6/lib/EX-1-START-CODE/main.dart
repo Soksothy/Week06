@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'screens/course_list_screen.dart';
 
 void main() {
