@@ -39,7 +39,16 @@ class PostScreen extends StatelessWidget {
         return CircularProgressIndicator(); // display a progress
 
       case AsyncValueState.error:
-        return Text('Error: ${postsValue.error}'); // display an error
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Error: ${postsValue.error}'), // display an error
+            ElevatedButton(
+              onPressed: () => postsProvider.fetchPosts(),
+              child: Text('Retry'),
+            ),
+          ],
+        );
 
       case AsyncValueState.success:
         if (postsValue.data!.isEmpty) {
