@@ -1,5 +1,4 @@
 import '../model/post.dart';
-
 import 'post_repository.dart';
 
 class MockPostRepository extends PostRepository {
@@ -14,6 +13,29 @@ class MockPostRepository extends PostRepository {
         title: 'Who is the best',
         description: 'teacher ronan',
       );
+    });
+  }
+
+  @override
+  Future<List<Post>> getPosts() {
+    return Future.delayed(Duration(seconds: 5), () {
+      return [
+        Post(
+          id: 1,
+          title: 'Who is the best teacher',
+          description: 'teacher ronan',
+        ),
+        Post(
+          id: 2,
+          title: 'Who is the best lecturer',
+          description: 'teacher ronan',
+        ),
+        Post(
+          id: 3,
+          title: 'Who is the best professor',
+          description: 'teacher ronan',
+        ),
+      ];
     });
   }
 }

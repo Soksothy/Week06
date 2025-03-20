@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../model/post.dart';
 import '../providers/async_value.dart';
 import '../providers/post_provider.dart';
@@ -10,41 +9,49 @@ class PostScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //  1 - Get the post provider
-    final PostProvider postProvider = Provider.of<PostProvider>(context);
+    // 1- Get the posts provider
+    final PostsProvider postsProvider = Provider.of<PostsProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
         actions: [
           IconButton(
-            // 2- Fetch the post
-            onPressed: () => {postProvider.fetchPost(45)},
+            // 2- Fetch the posts
+            onPressed: () => {postsProvider.fetchPosts()},
             icon: const Icon(Icons.update),
           ),
         ],
       ),
-
-      // 3 -  Display the post
-      body: Center(child: _buildBody(postProvider)),
+      // 3- Display the posts
+      body: Center(child: _buildBody(postsProvider)),
     );
   }
 
-  Widget _buildBody(PostProvider courseProvider) {
-    final postValue = courseProvider.postValue;
+  Widget _buildBody(PostsProvider postsProvider) {
+    final postsValue = postsProvider.postsValue;
 
-    if (postValue == null) {
-      return Text('Tap refresh to display post'); // display an empty state
+    if (postsValue == null) {
+      return Text('Tap refresh to display posts'); // display an empty state
     }
 
-    switch (postValue.state) {
+    switch (postsValue.state) {
       case AsyncValueState.loading:
         return CircularProgressIndicator(); // display a progress
 
       case AsyncValueState.error:
-        return Text('Error: ${postValue.error}'); // display a error
+        return Text('Error: ${postsValue.error}'); // display an error
 
       case AsyncValueState.success:
-        return PostCard(post: postValue.data!); // display the post
+        if (postsValue.data!.isEmpty) {
+          return Text('No posts for now'); // display empty list message
+        }
+        return ListView.builder(
+          itemCount: postsValue.data!.length,
+          itemBuilder: (ctx, index) {
+            final post = postsValue.data![index];
+            return PostCard(post: post);
+          },
+        ); // display the list of posts
     }
   }
 }
