@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../models/course.dart';
+import '../models/course_model.dart';
 
 const Color mainColor = Colors.blue;
 

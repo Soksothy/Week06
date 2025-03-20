@@ -1,31 +1,18 @@
 import 'package:flutter/material.dart';
-import '../models/course.dart';
+import 'package:provider/provider.dart';
+import '../models/course_model.dart';
+import '../provider/courses_provider.dart';
 import 'course_screen.dart';
 
 const Color mainColor = Colors.blue;
 
-class CourseListScreen extends StatefulWidget {
+class CourseListScreen extends StatelessWidget {
   const CourseListScreen({super.key});
 
   @override
-  State<CourseListScreen> createState() => _CourseListScreenState();
-}
-
-class _CourseListScreenState extends State<CourseListScreen> {
-  final List<Course> _allCourses = [Course(name: 'HTML'), Course(name: 'JAVA')];
-
-  void _editCourse(Course course) async {
-    await Navigator.of(context).push<Course>(
-      MaterialPageRoute(builder: (ctx) => CourseScreen(course: course)),
-    );
-
-    setState(() {
-      // trigger a rebuild
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final coursesProvider = Provider.of<CoursesProvider>(context);
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -33,15 +20,23 @@ class _CourseListScreenState extends State<CourseListScreen> {
         title: const Text('SCORE APP', style: TextStyle(color: Colors.white)),
       ),
       body: ListView.builder(
-        itemCount: _allCourses.length,
-        itemBuilder:
-            (ctx, index) => Dismissible(
-              key: Key(_allCourses[index].name),
-              child: CourseTile(
-                course: _allCourses[index],
-                onEdit: _editCourse,
-              ),
+        itemCount: coursesProvider.courses.length,
+        itemBuilder: (ctx, index) {
+          final course = coursesProvider.courses[index];
+          return Dismissible(
+            key: Key(course.name),
+            child: CourseTile(
+              course: course,
+              onEdit: (course) async {
+                await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (ctx) => CourseScreen(courseId: course.name),
+                  ),
+                );
+              },
             ),
+          );
+        },
       ),
     );
   }
